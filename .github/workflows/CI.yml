@@ -24,6 +24,7 @@ jobs:
           - Downstream
           - ODEInterfaceRegression
           - Multithreading
+        julia-ref: [27f01f2771b77ffad4eb4b0668d1ae0893c3fe93]
     steps:
       - uses: actions/checkout@v2
       - name: Cache
@@ -46,14 +47,16 @@ jobs:
           # The value that is passed to git checkout, e.g. a tag, branch or a commit.
           #
           # Default: master
-          ref: 27f01f2771b77ffad4eb4b0668d1ae0893c3fe93
+          ref: ${{ matrix.julia-ref }}
 
           # The value that is passed to git clone. If you want to build Julia from a fork of yours,
           # you can change this value to https://github.com/YOUR_GITHUB_NAME/julia.git.
           #
           # Default: https://github.com/JuliaLang/julia.git
           source-repo: https://github.com/IanButterworth/julia.git
-      - run: echo "${HOME}/julia/bin" >> $GITHUB_PATH
+      - name: Add to PATH
+        run: echo "$HOME/julia/bin" >> "$GITHUB_PATH"
+        shell: bash
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
         env:
