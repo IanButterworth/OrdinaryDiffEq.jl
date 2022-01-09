@@ -24,7 +24,7 @@ jobs:
           - Downstream
           - ODEInterfaceRegression
           - Multithreading
-        julia-ref: [27f01f2771b77ffad4eb4b0668d1ae0893c3fe93]
+        julia-ref: [27f01f2771b77ffad4eb4b0668d1ae0893c3fe93, 5f6b8a1767f72c6b86ae391ece9c0ca52cd73c6b]
     steps:
       - uses: actions/checkout@v2
       - name: Cache
