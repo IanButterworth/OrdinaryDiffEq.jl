@@ -53,6 +53,7 @@ jobs:
           #
           # Default: https://github.com/JuliaLang/julia.git
           source-repo: https://github.com/IanButterworth/julia.git
+      - run: echo "${HOME}/julia/bin" >> $GITHUB_PATH
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
         env:
