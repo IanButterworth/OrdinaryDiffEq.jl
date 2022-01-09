@@ -24,24 +24,35 @@ jobs:
           - Downstream
           - ODEInterfaceRegression
           - Multithreading
-        version:
-          - '1'
-          - '1.6'
     steps:
       - uses: actions/checkout@v2
-      - uses: julia-actions/setup-julia@v1
+      - name: Cache
+        id: cache-julia
+        uses: actions/cache@v2
         with:
-          version: ${{ matrix.version }}
-      - uses: actions/cache@v1
-        env:
-          cache-name: cache-artifacts
+          # If you use a different target dir, you may want to update the cache key to include that info.
+          # actions/cache does not provide an option to specify the target dir for restoring the cache,
+          # so you may run into issues where the target dir of the build-julia action mismatches the cached directory.
+          path: ~/julia
+
+          # Note that this cache key will not work with branches
+          # because there could be new commits after the cache has been created.
+          key: ${{ runner.os }}-${{ matrix.julia-ref }}
+      - name: Build Julia
+        # Only rebuild Julia if there is no cache hit.
+        if: steps.cache-julia.outputs.cache-hit != 'true'
+        uses: julia-actions/build-julia@v1
         with:
-          path: ~/.julia/artifacts
-          key: ${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-test-${{ env.cache-name }}-
-            ${{ runner.os }}-test-
-            ${{ runner.os }}-
+          # The value that is passed to git checkout, e.g. a tag, branch or a commit.
+          #
+          # Default: master
+          ref: 27f01f2771b77ffad4eb4b0668d1ae0893c3fe93
+
+          # The value that is passed to git clone. If you want to build Julia from a fork of yours,
+          # you can change this value to https://github.com/YOUR_GITHUB_NAME/julia.git.
+          #
+          # Default: https://github.com/JuliaLang/julia.git
+          source-repo: https://github.com/IanButterworth/julia.git
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
         env:
